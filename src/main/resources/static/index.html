@@ -7,13 +7,14 @@
     <script type="text/javascript" src="/index.js"></script>
 </head>
 
-<body style="text-align: center">
+<body>
     <div>
         <form method="post" enctype="multipart/form-data" action="http://localhost:8080/upload">
             <input name="file" type="file" multiple/>
             <button type="submit">上传</button>
         </form>
     </div>
+    <ul id="fileList"></ul>
 </body>
 
 </html>

@@ -5,12 +5,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,6 +49,22 @@ public class MainController implements InitializingBean {
         log.info("上传完成");
         return "redirect:/index.html";
     }
+
+    @RequestMapping("/download/{filename}")
+    public void download(@PathVariable("filename") String filename, HttpServletResponse response) throws Exception {
+        log.info("下载文件:{}", filename);
+        InputStream inputStream = new FileInputStream(uploadDir + "/" + filename);
+        byte[] bytes = new byte[1024];
+        int length = inputStream.read(bytes);
+        ServletOutputStream outputStream = response.getOutputStream();
+        while (length > 0) {
+            outputStream.write(bytes, 0, length);
+            length = inputStream.read(bytes);
+        }
+        outputStream.close();
+        inputStream.close();
+    }
+
 
     @Override
     public void afterPropertiesSet() throws Exception {
